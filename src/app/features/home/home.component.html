@@ -1,0 +1,75 @@
+<div class="min-h-[80vh] flex flex-col items-center justify-center relative overflow-hidden">
+    <!-- Background Elements -->
+    <div
+        class="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] bg-gradient-to-b from-blue-50 to-transparent rounded-full opacity-50 -z-10 blur-3xl">
+    </div>
+
+    <div class="text-center mb-16 animate-fade-in-down">
+        <h1 class="text-5xl md:text-7xl font-black text-gray-900 mb-6 tracking-tight">
+            Predict Your <span
+                class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Fortune</span>
+        </h1>
+        <p class="text-xl text-gray-500 max-w-2xl mx-auto font-light leading-relaxed">
+            Advanced algorithms and statistical analysis to help you choose your next winning numbers for Vietlott Mega
+            6/45 and Power 6/55.
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-5xl px-4">
+        <!-- 6/45 Card -->
+        <div class="group relative bg-white rounded-3xl shadow-xl shadow-gray-200/50 hover:shadow-2xl hover:shadow-red-500/10 transition-all duration-500 cursor-pointer overflow-hidden border border-gray-50"
+            [routerLink]="['/dashboard', '645']">
+            <div
+                class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-orange-500 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500">
+            </div>
+
+            <div class="p-10 flex flex-col items-center relative z-10">
+                <div
+                    class="w-24 h-24 rounded-2xl bg-red-50 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500">
+                    <span class="text-3xl font-black text-red-600">6/45</span>
+                </div>
+                <h2 class="text-3xl font-bold mb-3 text-gray-800 group-hover:text-red-600 transition-colors">Mega 6/45
+                </h2>
+                <p class="text-gray-400 text-center font-medium">Jackpot starts at 12 Billion VND</p>
+
+                <div
+                    class="mt-8 opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500">
+                    <span class="text-red-600 font-bold flex items-center gap-2">
+                        Start Analysis <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6/55 Card -->
+        <div class="group relative bg-white rounded-3xl shadow-xl shadow-gray-200/50 hover:shadow-2xl hover:shadow-orange-500/10 transition-all duration-500 cursor-pointer overflow-hidden border border-gray-50"
+            [routerLink]="['/dashboard', '655']">
+            <div
+                class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-500 to-yellow-500 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500">
+            </div>
+
+            <div class="p-10 flex flex-col items-center relative z-10">
+                <div
+                    class="w-24 h-24 rounded-2xl bg-orange-50 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500">
+                    <span class="text-3xl font-black text-orange-600">6/55</span>
+                </div>
+                <h2 class="text-3xl font-bold mb-3 text-gray-800 group-hover:text-orange-600 transition-colors">Power
+                    6/55</h2>
+                <p class="text-gray-400 text-center font-medium">Jackpot starts at 30 Billion VND</p>
+
+                <div
+                    class="mt-8 opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500">
+                    <span class="text-orange-600 font-bold flex items-center gap-2">
+                        Start Analysis <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,48 @@
+<div class="bg-white rounded-3xl shadow-lg shadow-gray-200/50 border border-gray-50 overflow-hidden">
+    <div class="p-8 border-b border-gray-50 flex items-center justify-between">
+        <h2 class="text-xl font-bold text-gray-900">Recent History</h2>
+        <span class="text-sm text-gray-400">Last 10 Draws</span>
+    </div>
+
+    <div class="overflow-x-auto">
+        <table class="w-full text-left">
+            <thead class="bg-gray-50/50 text-gray-400 text-xs font-bold uppercase tracking-wider">
+                <tr>
+                    <th class="px-8 py-6">Draw Info</th>
+                    <th class="px-8 py-6">Result</th>
+                    <th class="px-8 py-6 text-right">Jackpot</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-50">
+                @for (item of history.slice(0, 10); track item.id) {
+                <tr class="hover:bg-gray-50/50 transition-colors group">
+                    <td class="px-8 py-6">
+                        <div class="font-bold text-gray-900">#{{ item.id }}</div>
+                        <div class="text-sm text-gray-400">{{ item.date }}</div>
+                    </td>
+                    <td class="px-8 py-6">
+                        <div class="flex gap-2">
+                            @for (num of parseResult(item.result); track $index; let last = $last) {
+                            @if (parseResult(item.result).length === 7 && last) {
+                            <span class="w-8 h-8 lottery-ball bg-red-600 text-xs border border-red-400">
+                                {{ num }}
+                            </span>
+                            } @else {
+                            <span
+                                [class]="'w-8 h-8 lottery-ball text-xs opacity-90 group-hover:opacity-100 transition-opacity ' + getBallColor(+num)">
+                                {{ num }}
+                            </span>
+                            }
+                            }
+                        </div>
+                    </td>
+                    <td class="px-8 py-6 text-right">
+                        <div class="font-bold text-gray-900">{{ item.jackpot1 ? (item.jackpot1 | number) : '-' }}</div>
+                        <div class="text-xs text-gray-400">VND</div>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

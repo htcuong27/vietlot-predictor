@@ -1,0 +1,209 @@
+<div class="space-y-12 animate-fade-in pb-20 relative">
+    <!-- Error Notification -->
+    @if (errorMessage()) {
+    <div class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 animate-fade-in-down">
+        <div class="bg-red-500 text-white px-6 py-3 rounded-full shadow-lg flex items-center gap-3">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span class="font-medium">{{ errorMessage() }}</span>
+        </div>
+    </div>
+    }
+
+    <!-- Header -->
+    <div class="flex items-center justify-between border-b border-gray-100 pb-6">
+        <div class="flex items-center gap-4">
+            <a routerLink="/"
+                class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+            </a>
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">
+                    {{ product() === '645' ? 'Mega 6/45' : 'Power 6/55' }}
+                </h1>
+                <p class="text-sm text-gray-500">Statistical Analysis & Prediction</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+            <span class="text-sm font-medium text-gray-600">Live Data</span>
+        </div>
+    </div>
+
+    <!-- Latest Result Hero -->
+    @if (latestResult(); as result) {
+    <div class="relative bg-white rounded-3xl shadow-xl shadow-gray-200/50 overflow-hidden p-8 md:p-12">
+        <div
+            class="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-50/50 to-transparent rounded-bl-full -mr-20 -mt-20 pointer-events-none">
+        </div>
+
+        <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-10">
+            <div>
+                <div class="text-sm font-bold text-blue-600 uppercase tracking-widest mb-2">Latest Draw #{{ result.id }}
+                </div>
+                <div class="text-5xl font-black text-gray-900 mb-2 tracking-tight">
+                    {{ result.date.split('00:00:00')[0] }}
+                </div>
+                <div class="text-gray-400 font-medium mb-8">Winning Numbers</div>
+
+                <div class="flex flex-wrap gap-4">
+                    @for (num of parseResult(result.result); track $index; let last = $last) {
+                    <!-- Special styling for the last number if it's 6/55 (7 numbers total) -->
+                    @if (product() === '655' && last) {
+                    <div class="relative">
+                        <div
+                            class="w-16 h-16 lottery-ball bg-red-600 text-2xl transform transition hover:-translate-y-1 border-2 border-red-400">
+                            {{ num }}
+                        </div>
+                        <span
+                            class="absolute -top-3 left-1/2 -translate-x-1/2 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm z-10">Special</span>
+                    </div>
+                    } @else {
+                    <div
+                        [class]="'w-16 h-16 lottery-ball text-2xl transform transition hover:-translate-y-1 ' + getBallColor(num)">
+                        {{ num }}
+                    </div>
+                    }
+                    }
+                </div>
+            </div>
+
+            @if (result.jackpot1) {
+            <div class="bg-gray-50 rounded-3xl p-8 border border-gray-100 min-w-[300px] text-center">
+                <div class="text-sm text-gray-500 font-bold uppercase tracking-wider mb-2">Jackpot Prize</div>
+                <div class="text-4xl font-black text-gray-900 mb-1">
+                    {{ (result.jackpot1 / 1000000000) | number:'1.0-2' }} <span
+                        class="text-xl text-gray-500">Billion</span>
+                </div>
+                <div class="text-sm text-gray-400">{{ result.jackpot1 | number }} VND</div>
+
+                @if (result.jackpot2) {
+                <div class="mt-6 pt-6 border-t border-gray-200/50">
+                    <div class="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Jackpot 2</div>
+                    <div class="text-2xl font-bold text-gray-800">{{ (result.jackpot2 / 1000000000) | number:'1.0-2' }}
+                        Billion</div>
+                </div>
+                }
+            </div>
+            }
+        </div>
+    </div>
+    }
+
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        <!-- Left Column: Controls -->
+        <div class="lg:col-span-4 space-y-8">
+            <div class="bg-white rounded-3xl shadow-lg shadow-gray-200/50 p-8 border border-gray-50 sticky top-8">
+                <h2 class="text-xl font-bold text-gray-900 mb-6">Prediction Engine</h2>
+
+                <div class="space-y-6">
+                    <div>
+                        <label
+                            class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Algorithm</label>
+                        <div class="space-y-2">
+                            @for (algo of algorithms; track algo.value) {
+                            <div (click)="selectedAlgorithm.set(algo.value)"
+                                [class]="'cursor-pointer p-4 rounded-xl border transition-all duration-200 flex items-center justify-between ' + (selectedAlgorithm() === algo.value ? 'border-blue-500 bg-blue-50/50 text-blue-700' : 'border-gray-100 hover:border-gray-200 hover:bg-gray-50 text-gray-600')">
+                                <span class="font-medium flex items-center gap-2">
+                                    {{ algo.label }}
+                                    @if (algo.value === 'csprng') {
+                                    <span
+                                        class="px-2 py-0.5 rounded-full bg-green-100 text-green-700 text-[10px] uppercase font-bold tracking-wider">Secure</span>
+                                    }
+                                    @if (algo.value === 'vrf') {
+                                    <span
+                                        class="px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 text-[10px] uppercase font-bold tracking-wider">Verifiable</span>
+                                    }
+                                </span>
+                                @if (selectedAlgorithm() === algo.value) {
+                                <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+                                }
+                            </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="mt-3 p-3 bg-gray-50 rounded-xl border border-gray-100 text-xs text-gray-500 italic">
+                        {{ selectedAlgorithmDescription() }}
+                    </div>
+                </div>
+
+                @if (selectedAlgorithm() === 'targetScore') {
+                <div class="animate-fade-in-down pt-4 border-t border-gray-100">
+                    <div class="flex items-center justify-between mb-4">
+                        <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">Target Score</label>
+                        <span class="text-2xl font-bold text-blue-600">{{ targetScore() }}</span>
+                    </div>
+                    <input type="range" [(ngModel)]="targetScore" min="0" max="100"
+                        class="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-blue-600">
+                </div>
+                }
+
+                <button (click)="generatePrediction()"
+                    class="w-full bg-gray-900 hover:bg-black text-white font-bold py-5 px-6 rounded-2xl shadow-xl shadow-gray-900/10 transform transition hover:-translate-y-1 active:translate-y-0 mt-4">
+                    Generate Numbers
+                </button>
+            </div>
+        </div>
+        <!-- Right Column: Results & Analysis -->
+        <div class="lg:col-span-8 space-y-10">
+            <!-- Predictions -->
+            @if (predictions().length > 0) {
+            <div class="space-y-4">
+                <div class="flex items-center justify-between mb-2">
+                    <h2 class="text-xl font-bold text-gray-900">Generated Results</h2>
+                    <button (click)="predictions.set([])"
+                        class="text-sm text-gray-400 hover:text-red-500 transition-colors">Clear</button>
+                </div>
+
+                @for (pred of predictions(); track $index) {
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 animate-slide-up flex flex-col md:flex-row items-center justify-between gap-6"
+                    [style.animation-delay]="$index * 100 + 'ms'">
+                    <div class="flex flex-wrap justify-start gap-3 w-full ">
+                        @for (num of pred.numbers; track $index) {
+                        <div [class]="'w-12 h-12 lottery-ball text-lg ' + getBallColor(num)">
+                            {{ num }}
+                        </div>
+                        }
+                    </div>
+
+                    <div class="flex flex-col items-end gap-3 pl-6 md:border-l border-gray-100">
+                        <div class="w-12 h-12 rounded-full flex items-center justify-center relative"
+                            [style.background]="'conic-gradient(#22c55e ' + pred.score + '%, #f3f4f6 0)'">
+                            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                                <span class="text-xs font-bold text-gray-700">{{ pred.score }}%</span>
+                            </div>
+                        </div>
+
+                        <div class="w-full pt-4 border-t border-gray-50">
+                            <p class="text-xs text-gray-500 italic flex items-start gap-2">
+                                <svg class="w-4 h-4 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                {{ pred.explanation }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                }
+            </div>
+            }
+
+            <!-- Charts & History -->
+            <div class="grid grid-cols-1 gap-8">
+                <app-chart [history]="history()" [product]="product()"></app-chart>
+                <app-history [history]="history()"></app-history>
+            </div>
+        </div>
+    </div>
+
+
+</div>

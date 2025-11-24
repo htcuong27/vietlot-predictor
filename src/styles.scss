@@ -1,0 +1,73 @@
+/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .lottery-ball {
+        @apply rounded-full flex items-center justify-center text-white font-bold shadow-lg relative overflow-hidden;
+        background-image: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0) 20%),
+            radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.2));
+        box-shadow: inset -5px -5px 10px rgba(0, 0, 0, 0.3),
+            5px 5px 10px rgba(0, 0, 0, 0.2);
+
+        &::after {
+            content: '';
+            @apply absolute top-[15%] left-[15%] w-[20%] h-[20%] rounded-full bg-white opacity-60 blur-[1px];
+        }
+    }
+}
+
+@layer utilities {
+    .animate-fade-in {
+        animation: fadeIn 0.5s ease-out forwards;
+    }
+
+    .animate-fade-in-down {
+        animation: fadeInDown 0.5s ease-out forwards;
+    }
+
+    .animate-slide-up {
+        animation: slideUp 0.5s ease-out forwards;
+        opacity: 0;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    @apply bg-gray-50 text-gray-800;
+}
