@@ -199,11 +199,13 @@
 
             <!-- Charts & History -->
             <div class="grid grid-cols-1 gap-8">
-                <app-chart [history]="history()" [product]="product()"></app-chart>
+
                 <app-history [history]="history()"></app-history>
             </div>
         </div>
     </div>
-
+    <div>
+        <app-chart [history]="history()" [product]="product()"></app-chart>
+    </div>
 
 </div>

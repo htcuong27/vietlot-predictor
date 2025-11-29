@@ -56,8 +56,8 @@ export class ChartComponent implements OnChanges {
     // Count
     this.history.forEach(draw => {
       if (draw.result) {
-        draw.result.split('-').forEach(n => {
-          const num = parseInt(n, 10);
+        draw.result.split(',').forEach(n => {
+          const num = Number(n)
           if (freqs[num] !== undefined) freqs[num]++;
         });
       }
@@ -66,7 +66,6 @@ export class ChartComponent implements OnChanges {
     // Sort and take top 20 for readability
     const sorted = Object.entries(freqs)
       .sort(([, a], [, b]) => b - a)
-      .slice(0, 20);
 
     this.barChartData.labels = sorted.map(([k]) => k);
     this.barChartData.datasets[0].data = sorted.map(([, v]) => v);

@@ -1,7 +1,35 @@
 <div class="bg-white rounded-3xl shadow-lg shadow-gray-200/50 border border-gray-50 overflow-hidden">
-    <div class="p-8 border-b border-gray-50 flex items-center justify-between">
+    <div class="p-8 border-b border-gray-50 flex flex-col md:flex-row items-center justify-between gap-4">
         <h2 class="text-xl font-bold text-gray-900">Recent History</h2>
-        <span class="text-sm text-gray-400">Last 10 Draws</span>
+        <div class="flex flex-wrap items-center gap-3">
+            <!-- Year Filter -->
+            <select [(ngModel)]="selectedYear"
+                class="bg-gray-50 border border-gray-200 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2 outline-none cursor-pointer hover:bg-gray-100 transition-colors">
+                <option [ngValue]="null">All Years</option>
+                @for (year of years; track year) {
+                <option [ngValue]="year">{{ year }}</option>
+                }
+            </select>
+
+            <!-- Month Filter -->
+            <select [(ngModel)]="selectedMonth"
+                class="bg-gray-50 border border-gray-200 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2 outline-none cursor-pointer hover:bg-gray-100 transition-colors">
+                <option [ngValue]="null">All Months</option>
+                @for (month of months; track month) {
+                <option [ngValue]="month"> {{ month }}</option>
+                }
+            </select>
+
+            <div class="w-px h-6 bg-gray-200 mx-1"></div>
+
+            <span class="text-sm text-gray-400">Show:</span>
+            <select [(ngModel)]="limit"
+                class="bg-gray-50 border border-gray-200 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2 outline-none cursor-pointer hover:bg-gray-100 transition-colors">
+                @for (opt of limitOptions; track opt) {
+                <option [ngValue]="opt">{{ opt }}</option>
+                }
+            </select>
+        </div>
     </div>
 
     <div class="overflow-x-auto">
@@ -14,7 +42,7 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-50">
-                @for (item of history.slice(0, 10); track item.id) {
+                @for (item of filteredHistory; track item.id) {
                 <tr class="hover:bg-gray-50/50 transition-colors group">
                     <td class="px-8 py-6">
                         <div class="font-bold text-gray-900">#{{ item.id }}</div>
@@ -39,6 +67,15 @@
                     <td class="px-8 py-6 text-right">
                         <div class="font-bold text-gray-900">{{ item.jackpot1 ? (item.jackpot1 | number) : '-' }}</div>
                         <div class="text-xs text-gray-400">VND</div>
+                    </td>
+                </tr>
+                } @empty {
+                <tr>
+                    <td colspan="3" class="px-8 py-12 text-center text-gray-400">
+                        <div class="flex flex-col items-center gap-2">
+                            <span class="text-2xl">📭</span>
+                            <span>No history data found</span>
+                        </div>
                     </td>
                 </tr>
                 }
