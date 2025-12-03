@@ -1,5 +1,37 @@
 [
   {
+    "id": 1439,
+    "date": "30-11-2025 00:00:00",
+    "result": "07,13,26,30,34,42",
+    "termDate": "#01439",
+    "statistical": [
+      {
+        "giaithuong": "Jackpot",
+        "ketqua": "O O O O O O",
+        "soluonggiai": "0",
+        "giatrigiai": "13.413.193.000"
+      },
+      {
+        "giaithuong": "Giải Nhất",
+        "ketqua": "O O O O O",
+        "soluonggiai": "20",
+        "giatrigiai": "10.000.000"
+      },
+      {
+        "giaithuong": "Giải Nhì",
+        "ketqua": "O O O O",
+        "soluonggiai": "977",
+        "giatrigiai": "300.000"
+      },
+      {
+        "giaithuong": "Giải Ba",
+        "ketqua": "O O O",
+        "soluonggiai": "15216",
+        "giatrigiai": "30.000"
+      }
+    ]
+  },
+  {
     "id": 1438,
     "date": "28-11-2025 00:00:00",
     "result": "02,09,17,23,39,41",

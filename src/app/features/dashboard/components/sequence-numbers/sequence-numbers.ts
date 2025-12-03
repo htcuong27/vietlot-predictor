@@ -1,4 +1,4 @@
-import { Component, computed, effect, input, OnInit, signal } from "@angular/core";
+import { Component, effect, input, signal } from "@angular/core";
 import { LotteryResult } from "../../models/lottery";
 
 @Component({
@@ -22,11 +22,8 @@ export class SequenceNumbers {
     );
 
     constructor() {
-        console.log(this.sequenceNumbers())
-
         effect(() => {
             if (this.history()?.length) {
-                console.log(this.history());
                 this.sequenceNumbers.update((sequenceNumbers) => {
                     [...this.history() || []]?.reverse()?.map((data) => {
                         const result: number[] = data.result.split(',').map((num) => parseInt(num));
@@ -44,7 +41,6 @@ export class SequenceNumbers {
             }
         }, { allowSignalWrites: true });
     }
-
 
 
     generateNumbers(product: '645' | '655'): number[] {
