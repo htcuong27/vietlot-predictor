@@ -7,11 +7,12 @@ import { PredictionService } from './services/prediction.service';
 import { ChartComponent } from './components/chart/chart.component';
 import { HistoryComponent } from './components/history/history.component';
 import { AlgorithmType } from './models/algorithm';
+import { SequenceNumbers } from './components/sequence-numbers/sequence-numbers';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, ChartComponent, HistoryComponent],
+  imports: [CommonModule, RouterModule, FormsModule, ChartComponent, HistoryComponent, SequenceNumbers],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
