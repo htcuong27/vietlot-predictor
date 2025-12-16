@@ -11,12 +11,13 @@ export class SequenceNumbers {
     product = input<'645' | '655'>('645');
     history = input<LotteryResult[]>();
     numbers = signal<number[]>(this.generateNumbers(this.product()));
-    sequenceNumbers = signal<{ number: number; count: number, max: number }[]>(
+    sequenceNumbers = signal<{ number: number; count: number, max: number, recent: number }[]>(
         this.numbers().map((number) => {
             return {
                 number: number,
                 count: 0,
-                max: 0
+                max: 0,
+                recent: Infinity
             }
         })
     );
@@ -31,6 +32,7 @@ export class SequenceNumbers {
                             if (!result.includes(sequenceNumber.number)) {
                                 sequenceNumber.count++;
                             } else {
+                                sequenceNumber.recent = sequenceNumber.count;
                                 sequenceNumber.count = 0;
                             }
                             sequenceNumber.max = Math.max(sequenceNumber.count, sequenceNumber.max);

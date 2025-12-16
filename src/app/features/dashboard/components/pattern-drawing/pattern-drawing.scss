@@ -1,0 +1,32 @@
+:host {
+    display: block;
+}
+
+// Smooth animations for grid cells
+.grid>div {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+}
+
+// Pattern button hover effects
+button {
+    &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+    .grid>div {
+        font-size: 0.75rem;
+    }
+}

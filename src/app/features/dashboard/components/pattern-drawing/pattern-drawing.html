@@ -1,0 +1,154 @@
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+    <h2 class="text-xl font-bold text-gray-800 mb-4">Pattern Drawing Analysis</h2>
+
+    <!-- Pattern Selector -->
+    <div class="mb-6">
+        <h3 class="text-sm font-semibold text-gray-700 mb-2">Historical Patterns</h3>
+        <div class="flex gap-2 overflow-x-auto pb-2">
+            @for (pattern of patterns(); track $index) {
+            <button (click)="selectPattern($index)" [class.bg-blue-500]="selectedPatternIndex() === $index"
+                [class.text-white]="selectedPatternIndex() === $index"
+                [class.bg-gray-100]="selectedPatternIndex() !== $index"
+                [class.text-gray-700]="selectedPatternIndex() !== $index"
+                class="px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap hover:bg-blue-400">
+                Pattern {{ $index + 1 }}
+                <span class="block text-xs opacity-75">{{ pattern.shape }}</span>
+            </button>
+            }
+        </div>
+    </div>
+
+    <!-- Grid Display -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Current Pattern Grid -->
+        @if (patterns().length > 0) {
+        <div>
+            <h3 class="text-sm font-semibold text-gray-700 mb-3">
+                Pattern {{ selectedPatternIndex() + 1 }}: {{ patterns()[selectedPatternIndex()].shape }}
+            </h3>
+            <div class="relative bg-gray-50 rounded-lg p-4">
+                <!-- Canvas for pattern visualization -->
+                <div class="relative" style="position: relative;">
+                    <canvas #currentCanvas class="absolute inset-0 pointer-events-none z-10">
+                    </canvas>
+
+                    <!-- Number Grid -->
+                    <div class="grid gap-2 relative"
+                        [style.grid-template-columns]="'repeat(' + numbersPerRow + ', minmax(0, 1fr))'">
+                        @for (num of gridNumbers(); track num) {
+                        <div [class.bg-blue-500]="isNumberInPattern(num, selectedPatternIndex())"
+                            [class.text-white]="isNumberInPattern(num, selectedPatternIndex())"
+                            [class.font-bold]="isNumberInPattern(num, selectedPatternIndex())"
+                            [class.scale-110]="isNumberInPattern(num, selectedPatternIndex())"
+                            [class.shadow-lg]="isNumberInPattern(num, selectedPatternIndex())"
+                            [class.bg-white]="!isNumberInPattern(num, selectedPatternIndex())"
+                            [class.text-gray-700]="!isNumberInPattern(num, selectedPatternIndex())"
+                            [class.z-20]="isNumberInPattern(num, selectedPatternIndex())"
+                            class="aspect-square flex items-center justify-center rounded-lg text-sm transition-all duration-200 border border-gray-200">
+                            {{ num }}
+                        </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Selected Numbers Display -->
+                <div class="mt-4 p-3 bg-white rounded-lg border border-gray-200">
+                    <p class="text-xs font-semibold text-gray-600 mb-2">Selected Numbers:</p>
+                    <div class="flex flex-wrap gap-2">
+                        @for (num of patterns()[selectedPatternIndex()].numbers; track num) {
+                        <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
+                            {{ num }}
+                        </span>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        }
+
+        <!-- Predicted Pattern Grid -->
+        @if (predictedPattern()) {
+        <div>
+            <h3 class="text-sm font-semibold text-gray-700 mb-3">
+                Predicted Next Pattern: {{ predictedPattern()!.shape }}
+            </h3>
+            <div
+                class="relative bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-4 border-2 border-green-200">
+                <!-- Canvas for pattern visualization -->
+                <div class="relative" style="position: relative;">
+                    <canvas #predictedCanvas class="absolute inset-0 pointer-events-none z-10">
+                    </canvas>
+
+                    <!-- Number Grid -->
+                    <div class="grid gap-2 relative"
+                        [style.grid-template-columns]="'repeat(' + numbersPerRow + ', minmax(0, 1fr))'">
+                        @for (num of gridNumbers(); track num) {
+                        <div [class.bg-green-500]="isNumberInPrediction(num)"
+                            [class.text-white]="isNumberInPrediction(num)" [class.font-bold]="isNumberInPrediction(num)"
+                            [class.scale-110]="isNumberInPrediction(num)" [class.shadow-lg]="isNumberInPrediction(num)"
+                            [class.bg-white]="!isNumberInPrediction(num)"
+                            [class.text-gray-700]="!isNumberInPrediction(num)" [class.z-20]="isNumberInPrediction(num)"
+                            class="aspect-square flex items-center justify-center rounded-lg text-sm transition-all duration-200 border border-gray-200">
+                            {{ num }}
+                        </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Predicted Numbers Display -->
+                <div class="mt-4 p-3 bg-white rounded-lg border border-green-200">
+                    <p class="text-xs font-semibold text-gray-600 mb-2">Predicted Numbers:</p>
+                    <div class="flex flex-wrap gap-2">
+                        @for (num of predictedPattern()!.numbers; track num) {
+                        <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
+                            {{ num }}
+                        </span>
+                        }
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2 italic">
+                        ⚠️ This is a prediction based on pattern analysis. Use for reference only.
+                    </p>
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+
+    <!-- Pattern Analysis Summary -->
+    @if (patterns().length > 0) {
+    <div class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+        <h3 class="text-sm font-semibold text-blue-900 mb-3">Pattern Analysis Summary</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="text-center">
+                <p class="text-2xl font-bold text-blue-600">{{ patterns().length }}</p>
+                <p class="text-xs text-gray-600">Total Patterns</p>
+            </div>
+            <div class="text-center">
+                <p class="text-2xl font-bold text-blue-600">{{ patterns()[selectedPatternIndex()].shape }}</p>
+                <p class="text-xs text-gray-600">Current Shape</p>
+            </div>
+            <div class="text-center">
+                <p class="text-2xl font-bold text-green-600">{{ predictedPattern()?.shape || 'N/A' }}</p>
+                <p class="text-xs text-gray-600">Predicted Shape</p>
+            </div>
+            <div class="text-center">
+                <p class="text-2xl font-bold text-purple-600">{{ patterns()[selectedPatternIndex()].numbers.length }}
+                </p>
+                <p class="text-xs text-gray-600">Numbers in Pattern</p>
+            </div>
+        </div>
+    </div>
+    }
+
+    <!-- No Data State -->
+    @if (patterns().length === 0) {
+    <div class="text-center py-12">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-gray-900">No pattern data available</h3>
+        <p class="mt-1 text-sm text-gray-500">Waiting for lottery history data to analyze patterns.</p>
+    </div>
+    }
+</div>

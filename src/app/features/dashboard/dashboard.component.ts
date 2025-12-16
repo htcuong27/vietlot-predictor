@@ -8,11 +8,12 @@ import { ChartComponent } from './components/chart/chart.component';
 import { HistoryComponent } from './components/history/history.component';
 import { AlgorithmType } from './models/algorithm';
 import { SequenceNumbers } from './components/sequence-numbers/sequence-numbers';
+import { PatternDrawing } from './components/pattern-drawing/pattern-drawing';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, ChartComponent, HistoryComponent, SequenceNumbers],
+  imports: [CommonModule, RouterModule, FormsModule, ChartComponent, HistoryComponent, SequenceNumbers, PatternDrawing],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })

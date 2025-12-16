@@ -6,7 +6,7 @@
                 <tr>
                     <th
                         class="sticky left-0 bg-gray-50 z-10 px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider shadow-sm border-r">
-                        Number
+                        Numbers
                     </th>
                     @for (number of numbers(); track $index) {
                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -35,6 +35,17 @@
                     @for (sequenceNumber of sequenceNumbers(); track $index) {
                     <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">
                         {{ sequenceNumber.max }}
+                    </td>
+                    }
+                </tr>
+                <tr>
+                    <th
+                        class="sticky left-0 bg-white z-10 px-4 py-2 text-left text-sm font-medium text-gray-900 whitespace-nowrap shadow-sm border-r">
+                        Recent
+                    </th>
+                    @for (sequenceNumber of sequenceNumbers(); track $index) {
+                    <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">
+                        {{ sequenceNumber.recent }}
                     </td>
                     }
                 </tr>
