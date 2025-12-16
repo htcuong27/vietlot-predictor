@@ -1,5 +1,6 @@
 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
     <h2 class="text-xl font-bold text-gray-800 mb-4">Frequency Analysis</h2>
+    <div class="text-sm text-gray-500 mt-2">Average: {{ average().toFixed(2) }}</div>
     <div class="block w-full overflow-x-auto">
         <canvas baseChart [data]="barChartData" [options]="barChartOptions" [type]="barChartType" [legend]="true">
         </canvas>

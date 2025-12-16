@@ -133,7 +133,9 @@ export class PredictionService {
         else if (sum >= 80 && sum <= 220) sumScore = 20;
         else if (sum >= 60 && sum <= 240) sumScore = 10;
 
-        return Math.round(normalizedFreqScore + spreadScore + sumScore);
+        const result = normalizedFreqScore + spreadScore + sumScore;
+
+        return Math.round(result >= 100 ? 99 : result);
     }
 
     private generateRandom(max: number): { numbers: number[], explanation: string } {

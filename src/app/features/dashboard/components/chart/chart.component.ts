@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnChanges, signal, SimpleChanges, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BaseChartDirective, NgChartsModule } from 'ng2-charts';
 import { ChartConfiguration, ChartData, ChartEvent, ChartType } from 'chart.js';
@@ -9,13 +9,16 @@ import { LotteryResult } from '../../models/lottery';
   standalone: true,
   imports: [CommonModule, NgChartsModule],
   templateUrl: './chart.component.html',
-  styleUrls: ['./chart.component.scss']
+  styleUrls: ['./chart.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChartComponent implements OnChanges {
   @Input() history: LotteryResult[] = [];
   @Input() product: '645' | '655' = '645';
 
   @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
+
+  average = signal(0);
 
   public barChartOptions: ChartConfiguration['options'] = {
     responsive: true,
@@ -34,9 +37,10 @@ export class ChartComponent implements OnChanges {
   public barChartType: ChartType = 'bar';
 
   public barChartData: ChartData<'bar'> = {
-    labels: [],
+    labels: [
+    ],
     datasets: [
-      { data: [], label: 'Frequency' }
+      { data: [], label: 'Numbers' },
     ]
   };
 
@@ -63,14 +67,13 @@ export class ChartComponent implements OnChanges {
       }
     });
 
-    // Sort and take top 20 for readability
-    const sorted = Object.entries(freqs)
-      .sort(([, a], [, b]) => b - a)
+    const data = Object.entries(freqs);
+    this.average.set(data.reduce((acc, [, v]) => acc + v, 0) / data.length);
 
-    this.barChartData.labels = sorted.map(([k]) => k);
-    this.barChartData.datasets[0].data = sorted.map(([, v]) => v);
-    this.barChartData.datasets[0].backgroundColor = 'rgba(59, 130, 246, 0.5)';
-    this.barChartData.datasets[0].borderColor = 'rgb(59, 130, 246)';
+    this.barChartData.labels = data.map(([k]) => k);
+    this.barChartData.datasets[0].data = data.map(([, v]) => v);
+    this.barChartData.datasets[0].backgroundColor = data.map(([, v]) => v > this.average() ? 'rgba(59, 130, 246, 0.5)' : 'rgba(59, 130, 246, 0.1)');
+    this.barChartData.datasets[0].borderColor = data.map(([, v]) => v > this.average() ? 'rgb(59, 130, 246)' : 'rgb(59, 130, 246)');
     this.barChartData.datasets[0].borderWidth = 1;
 
     this.chart?.update();

@@ -19,14 +19,14 @@
     </div>
 
     <!-- Grid Display -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="flex flex-row gap-6">
         <!-- Current Pattern Grid -->
         @if (patterns().length > 0) {
-        <div>
+        <div class="w-1/2 flex flex-col">
             <h3 class="text-sm font-semibold text-gray-700 mb-3">
                 Pattern {{ selectedPatternIndex() + 1 }}: {{ patterns()[selectedPatternIndex()].shape }}
             </h3>
-            <div class="relative bg-gray-50 rounded-lg p-4">
+            <div class="relative bg-gray-50 rounded-lg p-4 flex-1">
                 <!-- Canvas for pattern visualization -->
                 <div class="relative" style="position: relative;">
                     <canvas #currentCanvas class="absolute inset-0 pointer-events-none z-10">
@@ -44,6 +44,8 @@
                             [class.bg-white]="!isNumberInPattern(num, selectedPatternIndex())"
                             [class.text-gray-700]="!isNumberInPattern(num, selectedPatternIndex())"
                             [class.z-20]="isNumberInPattern(num, selectedPatternIndex())"
+                            [class.opacity-50]="!isNumberInPattern(num, selectedPatternIndex())"
+                            [class.pointer-events-none]="!isNumberInPattern(num, selectedPatternIndex())"
                             class="aspect-square flex items-center justify-center rounded-lg text-sm transition-all duration-200 border border-gray-200">
                             {{ num }}
                         </div>
@@ -68,7 +70,7 @@
 
         <!-- Predicted Pattern Grid -->
         @if (predictedPattern()) {
-        <div>
+        <div class="w-1/2 flex flex-col">
             <h3 class="text-sm font-semibold text-gray-700 mb-3">
                 Predicted Next Pattern: {{ predictedPattern()!.shape }}
             </h3>
@@ -88,6 +90,8 @@
                             [class.scale-110]="isNumberInPrediction(num)" [class.shadow-lg]="isNumberInPrediction(num)"
                             [class.bg-white]="!isNumberInPrediction(num)"
                             [class.text-gray-700]="!isNumberInPrediction(num)" [class.z-20]="isNumberInPrediction(num)"
+                            [class.opacity-50]="!isNumberInPrediction(num)"
+                            [class.pointer-events-none]="!isNumberInPrediction(num)"
                             class="aspect-square flex items-center justify-center rounded-lg text-sm transition-all duration-200 border border-gray-200">
                             {{ num }}
                         </div>
