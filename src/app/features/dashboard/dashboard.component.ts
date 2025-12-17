@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { LotteryService } from './services/lottery.service';
 import { PredictionService } from './services/prediction.service';
+import { AiService } from '../../core/services/ai.service';
 import { ChartComponent } from './components/chart/chart.component';
 import { HistoryComponent } from './components/history/history.component';
 import { AlgorithmType } from './models/algorithm';
@@ -15,7 +16,8 @@ import { PatternDrawing } from './components/pattern-drawing/pattern-drawing';
   standalone: true,
   imports: [CommonModule, RouterModule, FormsModule, ChartComponent, HistoryComponent, SequenceNumbers, PatternDrawing],
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+  styleUrls: ['./dashboard.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardComponent implements OnInit {
   product = signal<'645' | '655'>('645');
@@ -33,7 +35,8 @@ export class DashboardComponent implements OnInit {
   predictions = signal<{ numbers: number[], score: number, explanation: string }[]>([]);
   selectedAlgorithm = signal<AlgorithmType>('random');
   targetScore = signal<number>(80);
-  errorMessage = signal<string>(''); // Signal for error messages
+  isLoading = false;
+  errorMessage = '';
 
   algorithms: { value: AlgorithmType, label: string, description: string }[] = [
     { value: 'random', label: 'Random Selection', description: 'Generates completely random numbers without any historical bias.' },
@@ -44,7 +47,8 @@ export class DashboardComponent implements OnInit {
     { value: 'pairAnalysis', label: 'Pair Analysis', description: 'Uses the most frequent number pairs from recent history to build combinations.' },
     { value: 'lastDigit', label: 'Last Digit Analysis', description: 'Focuses on numbers ending with "lucky" digits that appear frequently.' },
     { value: 'csprng', label: 'CSPRNG (Secure)', description: 'Uses browser\'s cryptographic random generator for high-security randomness.' },
-    { value: 'vrf', label: 'Chainlink VRF (Simulated)', description: 'Simulates Verifiable Random Function with a deterministic seed.' }
+    { value: 'vrf', label: 'Chainlink VRF (Simulated)', description: 'Simulates Verifiable Random Function with a deterministic seed.' },
+    { value: 'ai', label: 'AI Prediction (Gemini)', description: 'Uses Google Gemini AI to analyze patterns and suggest numbers.' }
   ];
 
   selectedAlgorithmDescription = computed(() => {
@@ -55,7 +59,8 @@ export class DashboardComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     public lotteryService: LotteryService,
-    private predictionService: PredictionService
+    private predictionService: PredictionService,
+    private aiService: AiService
   ) {
     // React to route changes
     this.route.params.subscribe(params => {
@@ -71,28 +76,38 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() { }
 
-  generatePrediction() {
+  async generatePrediction() {
+    console.log('Generating prediction...');
+    this.isLoading = true;
+    this.errorMessage = '';
+
     const p = this.product();
     const hist = this.history();
     const algo = this.selectedAlgorithm();
 
-    // Generate 1 or 5 predictions depending on mode or user preference
-    const count = algo === 'targetScore' ? 5 : 1;
+    try {
+      // Generate 1 or 5 predictions depending on mode or user preference
+      const count = algo === 'targetScore' ? 5 : 1;
 
-    const results = this.predictionService.predictMultiple(
-      this.selectedAlgorithm(),
-      hist,
-      this.product(),
-      5, // Generate 5 options
-      this.targetScore()
-    );
+      const results = await this.predictionService.predictMultiple(
+        this.selectedAlgorithm(),
+        hist,
+        this.product(),
+        5, // Generate 5 options
+        this.targetScore()
+      );
 
-    if (results.length === 0) {
-      this.errorMessage.set('Could not generate predictions. Please try a different algorithm or target score.');
-      setTimeout(() => this.errorMessage.set(''), 3000); // Clear after 3 seconds
-    } else {
-      this.errorMessage.set('');
-      this.predictions.set(results);
+      if (results.length === 0) {
+        this.errorMessage = 'Could not generate predictions. Please try a different algorithm or target score.';
+        setTimeout(() => this.errorMessage = '', 3000); // Clear after 3 seconds
+      } else {
+        this.predictions.set(results);
+      }
+    } catch (error) {
+      console.error(error);
+      this.errorMessage = 'An error occurred during prediction.';
+    } finally {
+      this.isLoading = false;
     }
   }
 

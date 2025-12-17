@@ -1,1 +1,1 @@
-export type AlgorithmType = 'random' | 'hot' | 'cold' | 'balanced' | 'targetScore' | 'pairAnalysis' | 'lastDigit' | 'csprng' | 'vrf';
+export type AlgorithmType = 'random' | 'hot' | 'cold' | 'balanced' | 'targetScore' | 'pairAnalysis' | 'lastDigit' | 'csprng' | 'vrf' | 'ai';

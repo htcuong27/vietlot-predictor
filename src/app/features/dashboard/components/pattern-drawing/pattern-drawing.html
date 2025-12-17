@@ -1,5 +1,29 @@
 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-    <h2 class="text-xl font-bold text-gray-800 mb-4">Pattern Drawing Analysis</h2>
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold text-gray-800">Pattern Drawing Analysis</h2>
+        <div class="flex items-center gap-2">
+            <span class="text-sm font-medium text-gray-700">Use AI Prediction</span>
+            <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" [checked]="useAI" (change)="toggleAI($event)" class="sr-only peer">
+                <div
+                    class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600">
+                </div>
+            </label>
+
+            @if (useAI) {
+            <div>
+                <button (click)="usePredictiveNextPattern()"
+                    class="rounded-full hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-5 h-5 text-gray-600 hover:text-gray-900">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.181m0-7.962l-3.181-3.181m0 0a8.997 8.997 0 0118.004 0H2.985z" />
+                    </svg>
+                </button>
+            </div>
+            }
+        </div>
+    </div>
 
     <!-- Pattern Selector -->
     <div class="mb-6">
@@ -76,6 +100,16 @@
             </h3>
             <div
                 class="relative bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-4 border-2 border-green-200">
+                <!-- Loading Overlay -->
+                @if(isAnalyzing) {
+                <div
+                    class="absolute inset-0 z-50 bg-white/70 backdrop-blur-sm flex items-center justify-center rounded-lg">
+                    <div class="flex flex-col items-center">
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
+                        <p class="mt-2 text-sm font-medium text-green-700">AI Analyzing...</p>
+                    </div>
+                </div>
+                }
                 <!-- Canvas for pattern visualization -->
                 <div class="relative" style="position: relative;">
                     <canvas #predictedCanvas class="absolute inset-0 pointer-events-none z-10">
@@ -110,7 +144,11 @@
                         }
                     </div>
                     <p class="text-xs text-gray-500 mt-2 italic">
+                        @if(useAI) {
+                        ✨ AI Prediction: {{ predictedPattern()?.shape }}
+                        } @else {
                         ⚠️ This is a prediction based on pattern analysis. Use for reference only.
+                        }
                     </p>
                 </div>
             </div>

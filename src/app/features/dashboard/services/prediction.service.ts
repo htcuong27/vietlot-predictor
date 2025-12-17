@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
 import { AlgorithmType } from '../models/algorithm';
 import { LotteryResult } from '../models/lottery';
+import { AiService } from '../../../core/services/ai.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class PredictionService {
 
-    constructor() { }
+    constructor(private aiService: AiService) { }
 
-    predict(algorithm: AlgorithmType, history: LotteryResult[], product: '645' | '655', targetScore?: number): { numbers: number[], explanation: string } {
+    async predict(algorithm: AlgorithmType, history: LotteryResult[], product: '645' | '655', targetScore?: number): Promise<{ numbers: number[], explanation: string }> {
         const maxNumber = product === '645' ? 45 : 55;
 
         switch (algorithm) {
@@ -37,7 +38,7 @@ export class PredictionService {
     }
 
     // Generate multiple predictions for target score mode
-    predictMultiple(algorithm: AlgorithmType, history: LotteryResult[], product: '645' | '655', count: number = 1, targetScore?: number): { numbers: number[], score: number, explanation: string }[] {
+    async predictMultiple(algorithm: AlgorithmType, history: LotteryResult[], product: '645' | '655', count: number = 1, targetScore?: number): Promise<{ numbers: number[], score: number, explanation: string }[]> {
         const results: { numbers: number[], score: number, explanation: string }[] = [];
 
         if (algorithm === 'targetScore' && targetScore) {
@@ -82,17 +83,30 @@ export class PredictionService {
                 attempts++;
             }
 
-            // If not enough, just fill with closest
+            // If not enough, just fill with closest (could be improved)
             if (results.length < count) {
-                // Fill logic if needed, or just return what we have
+                // Fill with randoms if we fail to find target scores
+                const remaining = count - results.length;
+                for (let i = 0; i < remaining; i++) {
+                    const p = this.generateRandom(product === '645' ? 45 : 55);
+                    results.push({
+                        numbers: p.numbers,
+                        score: this.calculateScore(p.numbers, history),
+                        explanation: p.explanation
+                    });
+                }
             }
 
             return results.sort((a, b) => Math.abs(a.score - targetScore) - Math.abs(b.score - targetScore));
         }
 
+        if (algorithm === 'ai') {
+            const predictions = this.aiService.generatePrediction(count, product);
+            return predictions;
+        }
         // Normal single prediction repeated
         for (let i = 0; i < count; i++) {
-            const prediction = this.predict(algorithm, history, product);
+            const prediction = await this.predict(algorithm, history, product);
             results.push({
                 numbers: prediction.numbers,
                 score: this.calculateScore(prediction.numbers, history),

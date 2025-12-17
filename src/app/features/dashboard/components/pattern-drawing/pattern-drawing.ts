@@ -1,5 +1,6 @@
-import { Component, effect, input, signal, computed, ViewChild, ElementRef, AfterViewInit, HostListener } from "@angular/core";
 import { CommonModule } from "@angular/common";
+import { AfterViewInit, Component, computed, effect, ElementRef, HostListener, input, signal, ViewChild } from "@angular/core";
+import { AiService } from "../../../../core/services/ai.service";
 import { LotteryResult } from "../../models/lottery";
 
 interface Point {
@@ -18,7 +19,7 @@ interface Pattern {
     standalone: true,
     imports: [CommonModule],
     templateUrl: './pattern-drawing.html',
-    styleUrls: ['./pattern-drawing.scss']
+    styleUrls: ['./pattern-drawing.scss'],
 })
 export class PatternDrawing implements AfterViewInit {
     @ViewChild('currentCanvas', { static: false }) currentCanvasRef!: ElementRef<HTMLCanvasElement>;
@@ -46,7 +47,7 @@ export class PatternDrawing implements AfterViewInit {
     // Predicted next pattern
     predictedPattern = signal<Pattern | null>(null);
 
-    constructor() {
+    constructor(private aiService: AiService) {
         effect(() => {
             if (this.history()?.length) {
                 this.analyzePatterns();
@@ -59,6 +60,7 @@ export class PatternDrawing implements AfterViewInit {
             const p = this.patterns();
             const idx = this.selectedPatternIndex();
             const pred = this.predictedPattern();
+            const ai = this.useAI;
 
             // Draw on next tick to allow DOM to settle
             setTimeout(() => this.drawCanvases(), 0);
@@ -68,6 +70,22 @@ export class PatternDrawing implements AfterViewInit {
     @HostListener('window:resize')
     onResize() {
         this.drawCanvases();
+    }
+
+    // AI Toggle
+    useAI = false;
+    isAnalyzing = false;
+
+    toggleAI(event: Event) {
+        const checked = (event.target as HTMLInputElement).checked;
+        this.useAI = checked;
+        this.usePredictiveNextPattern();
+    }
+
+    usePredictiveNextPattern() {
+        if (this.patterns().length > 0) {
+            this.predictNextPattern(this.patterns());
+        }
     }
 
     /**
@@ -224,7 +242,40 @@ export class PatternDrawing implements AfterViewInit {
     /**
      * Predict next pattern based on historical patterns
      */
-    predictNextPattern(patterns: Pattern[]): void {
+    /**
+     * Predict next pattern based on historical patterns
+     */
+    async predictNextPattern(patterns: Pattern[]) {
+        if (this.useAI) {
+            this.isAnalyzing = true;
+            try {
+
+                const lastPattern = patterns[patterns.length - 1];
+                // Use last 3 patterns for context
+                const contextPatterns = patterns.slice(-3).map(p => p.points);
+
+                // Simplify for token limit - just send last pattern points
+                const numbers = this.aiService.generatePointNumbers(this.product()).sort((a, b) => a - b);
+                const result = numbers.map(num => this.numberToPoint(num));
+
+                const predictedNumbers = numbers;
+                this.predictedPattern.set({
+                    numbers: predictedNumbers,
+                    points: result,
+                    shape: 'AI Predicted Pattern'
+                });
+            } catch (e) {
+                console.error('AI Pattern Error', e);
+                this.runAlgorithmicPrediction(patterns);
+            } finally {
+                this.isAnalyzing = false;
+            }
+        } else {
+            this.runAlgorithmicPrediction(patterns);
+        }
+    }
+
+    runAlgorithmicPrediction(patterns: Pattern[]) {
         // Analyze pattern trends
         const shapeFrequency = new Map<string, number>();
 
