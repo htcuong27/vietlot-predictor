@@ -47,6 +47,8 @@ export class PatternDrawing implements AfterViewInit {
     // Predicted next pattern
     predictedPattern = signal<Pattern | null>(null);
 
+    count = signal<number>(0);
+
     constructor(private aiService: AiService) {
         effect(() => {
             if (this.history()?.length) {
@@ -82,6 +84,10 @@ export class PatternDrawing implements AfterViewInit {
         this.usePredictiveNextPattern();
     }
 
+    counter() {
+        this.count.update(c => c + 1);
+    }
+
     usePredictiveNextPattern() {
         if (this.patterns().length > 0) {
             this.predictNextPattern(this.patterns());
@@ -99,7 +105,10 @@ export class PatternDrawing implements AfterViewInit {
         const recentResults = historyData.slice(0, 10);
 
         recentResults.forEach((result) => {
-            const numbers = result.result.split(',').map(num => parseInt(num)).sort((a, b) => a - b);
+            const numbers = result.result.split(',').map(num => parseInt(num));
+            if (this.product() === '655') {
+                numbers.splice(6, 1)
+            }
             const points = numbers.map(num => this.numberToPoint(num));
             const shape = this.detectShape(points);
 
@@ -421,7 +430,6 @@ export class PatternDrawing implements AfterViewInit {
 
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
-
         const pattern = this.patterns()[this.selectedPatternIndex()];
         if (!pattern) return;
 

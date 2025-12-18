@@ -1,7 +1,7 @@
 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
     <div class="flex justify-between items-center mb-4">
         <h2 class="text-xl font-bold text-gray-800">Pattern Drawing Analysis</h2>
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 justify-center">
             <span class="text-sm font-medium text-gray-700">Use AI Prediction</span>
             <label class="relative inline-flex items-center cursor-pointer">
                 <input type="checkbox" [checked]="useAI" (change)="toggleAI($event)" class="sr-only peer">
@@ -10,18 +10,15 @@
                 </div>
             </label>
 
-            @if (useAI) {
-            <div>
-                <button (click)="usePredictiveNextPattern()"
-                    class="rounded-full hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="w-5 h-5 text-gray-600 hover:text-gray-900">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.181m0-7.962l-3.181-3.181m0 0a8.997 8.997 0 0118.004 0H2.985z" />
-                    </svg>
-                </button>
-            </div>
-            }
+            <button (click)="counter(); usePredictiveNextPattern()"
+                class="rounded-full bg-gray-500 hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-5 h-5 m-2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                </svg>
+            </button>
+            {{count()}}
         </div>
     </div>
 
