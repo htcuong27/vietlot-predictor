@@ -1,0 +1,29 @@
+:host {
+    display: block;
+    margin-top: 2rem;
+}
+
+.custom-scrollbar {
+    &::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #e5e7eb;
+        /* gray-200 */
+        border-radius: 9999px;
+    }
+
+    &:hover::-webkit-scrollbar-thumb {
+        background-color: #d1d5db;
+        /* gray-300 */
+    }
+}
+
+.virtual-scroll-viewport {
+    width: 100%;
+}

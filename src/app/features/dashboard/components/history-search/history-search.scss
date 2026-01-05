@@ -1,0 +1,31 @@
+:host {
+    display: block;
+}
+
+.lottery-ball {
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    color: white;
+    transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+
+    &.animate-bounce {
+        animation: ballBounce 0.5s ease-out;
+    }
+}
+
+@keyframes ballBounce {
+    0% {
+        transform: translateY(0) scale(1);
+    }
+
+    50% {
+        transform: translateY(-10px) scale(1.05);
+    }
+
+    100% {
+        transform: translateY(0) scale(1);
+    }
+}

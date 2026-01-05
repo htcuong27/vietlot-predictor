@@ -1,0 +1,27 @@
+:host {
+    display: block;
+}
+
+.virtual-scroll-viewport {
+    width: 100%;
+    background: white;
+}
+
+.custom-scrollbar {
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #e5e7eb;
+        border-radius: 9999px;
+    }
+
+    &:hover::-webkit-scrollbar-thumb {
+        background-color: #d1d5db;
+    }
+}

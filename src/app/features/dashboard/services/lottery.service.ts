@@ -79,6 +79,7 @@ export class LotteryService {
                 id: String(item.id),
                 date: item.date,
                 result: item.result,
+                termDate: item.termDate,
                 jackpot1: j1,
                 jackpot2: j2
             };

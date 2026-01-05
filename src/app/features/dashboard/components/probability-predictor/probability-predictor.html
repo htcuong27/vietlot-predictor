@@ -1,0 +1,106 @@
+<div class="bg-white rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100 p-8 mt-8">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+        <div>
+            <h2 class="text-2xl font-black text-gray-900 mb-2">Smart Probability Explorer</h2>
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">
+                Predicting based on historical gaps & weighted probability
+            </p>
+        </div>
+
+        <button (click)="generateProbabilitySets()" [disabled]="isLoading()"
+            class="px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg shadow-indigo-600/20 transition-all active:scale-95 disabled:opacity-50">
+            @if (isLoading()) {
+            <span class="flex items-center gap-2">
+                <svg class="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                    </path>
+                </svg>
+                Processing...
+            </span>
+            } @else {
+            Re-Calculate Probability
+            }
+        </button>
+    </div>
+
+    @if (predictionResults().length === 0 && !isLoading()) {
+    <div
+        class="flex flex-col items-center justify-center py-20 bg-gray-50 rounded-[2rem] border-2 border-dashed border-gray-100">
+        <div class="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center mb-4 text-indigo-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
+        </div>
+        <p class="text-gray-500 font-bold">Press "Re-Calculate" to explore new potential sets</p>
+        <p class="text-xs text-gray-400 mt-2">Algorithm excludes numbers from the latest winning draw</p>
+    </div>
+    } @else {
+    <cdk-virtual-scroll-viewport [itemSize]="itemSize" class="virtual-scroll-viewport custom-scrollbar"
+        style="height: 600px;">
+        <div *cdkVirtualFor="let item of predictionResults(); trackBy: trackByFn"
+            class="p-4 border-b border-gray-50 hover:bg-indigo-50/30 transition-colors">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div class="flex items-center gap-3">
+                    <div class="flex flex-wrap gap-2">
+                        @for (num of item.numbers; track num) {
+                        <div [class]="getBallColor(num)" class="w-10 h-10 lottery-ball text-sm">
+                            {{ num < 10 ? '0' + num : num }} </div>
+                                }
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-8">
+                        <div>
+                            <div class="text-[10px] font-black text-gray-400 uppercase tracking-tighter mb-1">
+                                Probability Score</div>
+                            <div class="text-lg font-black text-indigo-600">{{ item.avgProb | number:'1.2-2' }}%</div>
+                        </div>
+                        <div>
+                            <div class="text-[10px] font-black text-gray-400 uppercase tracking-tighter mb-1">Ripeness
+                                (Gaps)</div>
+                            <div class="text-lg font-black text-emerald-600">{{ item.maxGap }} draws</div>
+                        </div>
+                        <div class="hidden lg:block">
+                            <div class="text-[10px] font-black text-gray-400 uppercase tracking-tighter mb-1">Historical
+                                Check</div>
+                            <div
+                                class="text-indigo-900 font-bold text-xs px-3 py-1 bg-white rounded-lg inline-block border border-indigo-100">
+                                NEVER SEEN</div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button (click)="toggleBookmark(item.numbers)"
+                                [class.text-amber-500]="isBookmarked(item.numbers)"
+                                class="p-2 hover:bg-amber-50 rounded-xl transition-colors text-gray-300"
+                                title="Bookmark">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
+                                    [attr.fill]="isBookmarked(item.numbers) ? 'currentColor' : 'none'"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                                </svg>
+                            </button>
+                            <button (click)="copyNumbers(item.numbers)"
+                                class="p-2 hover:bg-slate-100 rounded-xl transition-colors text-gray-400"
+                                title="Copy to clipboard">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                                </svg>
+                            </button>
+                            <button (click)="sendToChecker(item.numbers)"
+                                class="px-3 py-1.5 bg-indigo-50 text-indigo-600 rounded-lg text-[10px] font-black uppercase hover:bg-indigo-100 transition-colors"
+                                title="Check in Jackpot Checker">
+                                Check Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </cdk-virtual-scroll-viewport>
+    }
+</div>

@@ -10,11 +10,15 @@ import { HistoryComponent } from './components/history/history.component';
 import { AlgorithmType } from './models/algorithm';
 import { SequenceNumbers } from './components/sequence-numbers/sequence-numbers';
 import { PatternDrawing } from './components/pattern-drawing/pattern-drawing';
+import { FrequentGroups } from './components/frequent-groups/frequent-groups';
+import { LuckyNumbers } from './components/lucky-numbers/lucky-numbers';
+import { ProbabilityPredictor } from './components/probability-predictor/probability-predictor';
+import { HistorySearch } from './components/history-search/history-search';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, ChartComponent, HistoryComponent, SequenceNumbers, PatternDrawing],
+  imports: [CommonModule, RouterModule, FormsModule, ChartComponent, HistoryComponent, SequenceNumbers, PatternDrawing, FrequentGroups, LuckyNumbers, ProbabilityPredictor, HistorySearch],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

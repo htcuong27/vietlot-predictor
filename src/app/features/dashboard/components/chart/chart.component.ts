@@ -60,8 +60,13 @@ export class ChartComponent implements OnChanges {
     // Count
     this.history.forEach(draw => {
       if (draw.result) {
-        draw.result.split(',').forEach(n => {
-          const num = Number(n)
+        let numbers = draw.result.split(/[,-]/).map(s => Number(s.trim())).filter(n => !isNaN(n));
+
+        if (this.product === '655' && numbers.length > 6) {
+          numbers = numbers.slice(0, 6);
+        }
+
+        numbers.forEach(num => {
           if (freqs[num] !== undefined) freqs[num]++;
         });
       }

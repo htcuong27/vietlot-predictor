@@ -13,26 +13,37 @@
     }
 
     <!-- Header -->
-    <div class="flex items-center justify-between border-b border-gray-100 pb-6">
-        <div class="flex items-center gap-4">
-            <a routerLink="/"
-                class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                </svg>
-            </a>
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900">
-                    {{ product() === '645' ? 'Mega 6/45' : 'Power 6/55' }}
-                </h1>
-                <p class="text-sm text-gray-500">Statistical Analysis & Prediction</p>
+    <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-8 border-b border-gray-100 pb-10">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a routerLink="/"
+                    class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                </a>
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">
+                        {{ product() === '645' ? 'Mega 6/45' : 'Power 6/55' }}
+                    </h1>
+                    <p class="text-sm text-gray-500">Statistical Analysis & Prediction</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2 lg:hidden">
+                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                <span class="text-sm font-medium text-gray-600">Live</span>
             </div>
         </div>
 
-        <div class="flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-            <span class="text-sm font-medium text-gray-600">Live Data</span>
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-6">
+            <app-lucky-numbers [product]="product()" [termId]="latestResult()?.id" class="xl:w-80"></app-lucky-numbers>
+
+            <div class="hidden lg:flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-2xl border border-gray-100">
+                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                <span class="text-sm font-medium text-gray-600">Real-time Data Active</span>
+            </div>
         </div>
     </div>
 
@@ -244,5 +255,16 @@
         <!-- Pattern Drawing Feature -->
         <app-pattern-drawing [history]="history()" [product]="product()"></app-pattern-drawing>
     </div>
-
+    <div>
+        <!-- Frequent Groups Feature -->
+        <app-frequent-groups [history]="history()" [product]="product()"></app-frequent-groups>
+    </div>
+    <div>
+        <!-- New: Smart Probability Explorer Feature -->
+        <app-probability-predictor [history]="history()" [product]="product()"></app-probability-predictor>
+    </div>
+    <div>
+        <!-- New: Jackpot Checker (History Search) Feature -->
+        <app-history-search [history]="history()" [product]="product()"></app-history-search>
+    </div>
 </div>

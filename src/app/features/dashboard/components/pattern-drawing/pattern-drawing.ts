@@ -105,9 +105,9 @@ export class PatternDrawing implements AfterViewInit {
         const recentResults = historyData.slice(0, 10);
 
         recentResults.forEach((result) => {
-            const numbers = result.result.split(',').map(num => parseInt(num));
-            if (this.product() === '655') {
-                numbers.splice(6, 1)
+            const numbers = result.result.split(/[,-]/).map(num => parseInt(num.trim())).filter(n => !isNaN(n));
+            if (this.product() === '655' && numbers.length > 6) {
+                numbers.splice(6, 1);
             }
             const points = numbers.map(num => this.numberToPoint(num));
             const shape = this.detectShape(points);

@@ -1,0 +1,50 @@
+<div
+    class="lucky-card rounded-[2.5rem] p-8 shadow-2xl shadow-indigo-900/20 border border-white/5 relative group transition-transform hover:-translate-y-1">
+    <div class="relative z-10">
+        <div class="flex items-center gap-3 mb-6">
+            <div
+                class="w-10 h-10 bg-indigo-500/20 rounded-2xl flex items-center justify-center border border-indigo-400/20">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-400" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 3L2 12h3v8h14v-8h3L12 3z" />
+                </svg>
+            </div>
+            <div>
+                <h3 class="text-lg font-black text-white tracking-tight uppercase">Today's Lucky Numbers</h3>
+                <p class="text-[10px] font-bold text-indigo-300 uppercase tracking-widest opacity-60">Based on cosmic
+                    alignment</p>
+            </div>
+        </div>
+
+        <div class="flex flex-wrap gap-3">
+            @for (num of luckyNumbers(); track num) {
+            <div
+                [class]="'w-12 h-12 lottery-ball text-lg text-white font-black border border-white/10 ' + getBallColor(num)">
+                {{ num < 10 ? '0' + num : num }} </div>
+                    }
+            </div>
+
+            <div class="mt-8 flex items-center justify-between">
+                <div class="flex -space-x-2">
+                    <div
+                        class="w-6 h-6 rounded-full bg-indigo-400/20 border border-white/10 flex items-center justify-center">
+                        <span class="text-[8px] font-bold text-white">✨</span>
+                    </div>
+                    <div
+                        class="w-6 h-6 rounded-full bg-indigo-400/20 border border-white/10 flex items-center justify-center backdrop-blur-sm px-4">
+                        <span class="text-[10px] font-black text-indigo-200 uppercase whitespace-nowrap">Daily
+                            Refresh</span>
+                    </div>
+                </div>
+
+                <div class="text-[10px] font-black text-white/40 uppercase tracking-[0.2em]">
+                    {{ product() === '645' ? 'Mega 6/45' : 'Power 6/55' }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Animated background elements -->
+        <div class="absolute bottom-[-20%] left-[-10%] w-32 h-32 bg-indigo-500/10 blur-3xl rounded-full"></div>
+        <div class="absolute top-[-10%] right-[-5%] w-24 h-24 bg-purple-500/10 blur-2xl rounded-full"></div>
+    </div>
